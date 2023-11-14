@@ -1,14 +1,11 @@
 ﻿using Illustrator;
-using ImageProcessor.Imaging;
 using ImageProcessor;
+using ImageProcessor.Imaging;
 using System;
-using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Drawing;
 
 namespace IllustratorMagentoConsole
 {
@@ -34,8 +31,6 @@ namespace IllustratorMagentoConsole
             illuDoc.Activate();
 
             Artboards artBoards = illuDoc.Artboards;
-            string artBoardName = "";
-            int artBoardIndex = 0;
 
             int index = 0;
 
@@ -52,7 +47,7 @@ namespace IllustratorMagentoConsole
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                 }
                 index++;
@@ -64,7 +59,7 @@ namespace IllustratorMagentoConsole
         }
 
 
-        public bool exportAiToPng(string fullName, string folderName, string size, string exportName = "")
+        public bool exportAiToPng(string fullName, string folderName, string exportName = "")
         {
             //Prepare paths and file names
             string exportFolder = exportadosFolder + Path.DirectorySeparatorChar + folderName;
@@ -127,7 +122,7 @@ namespace IllustratorMagentoConsole
                         artBoardName = artBoard.Name;
                         break;
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                     }
                 }
