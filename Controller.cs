@@ -12,7 +12,7 @@ namespace IllustratorMagentoConsole
         public static void actualizarMagento()
         {
 
-            fileExplorer fileExplorer = new fileExplorer();
+            EraseBak fileExplorer = new EraseBak();
             List<localProduct> productFolders = fileExplorer.mapAiFolder(Constants.clasificadosFolder);
             MagentoClient mc = new MagentoClient();
             List<Product> magentoProducts = mc.getProducts().items as List<Product>;
@@ -37,8 +37,7 @@ namespace IllustratorMagentoConsole
                         {
                             option = attribute
                         };
-                        string result = mc.createAttribute(attribute_code, op);
-                        productFolder.attributeId = result.Trim();
+                        productFolder.attributeId = mc.createAttribute(attribute_code, op);
                     }
                     else
                     {
@@ -112,7 +111,7 @@ namespace IllustratorMagentoConsole
                     customs.Add(cattribute);
                     product.custom_attributes = customs;
 
-                    magentoProduct = mc.updateProduct(magentoProduct.sku, product);
+                    magentoProduct = mc.updateProduct(product);
                     customAttr = magentoProduct.custom_attributes.Find(customAttribute => customAttribute.attribute_code == attribute_code);
                 }
 
@@ -205,7 +204,7 @@ namespace IllustratorMagentoConsole
 
         public static void eliminarProductos()
         {
-            fileExplorer fileExplorer = new fileExplorer();
+            EraseBak fileExplorer = new EraseBak();
             List<localProduct> productFolders = fileExplorer.mapAiFolder(Constants.clasificadosFolder);
             MagentoClient mc = new MagentoClient();
             List<Product> magentoProducts = mc.getProducts().items as List<Product>;

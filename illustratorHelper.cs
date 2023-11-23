@@ -2,6 +2,7 @@
 using ImageProcessor;
 using ImageProcessor.Imaging;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -16,46 +17,24 @@ namespace IllustratorMagentoConsole
 
         private Application illuApp { get; set; }
 
-        public bool extractAiInformation(string filePath)
+        public void extractAiInformation(string filePath)
         {
-            if (!File.Exists(filePath))
-            {
-                Console.WriteLine("false");
-
-                return false;
-            }
-
             Application illuApp = new Application();
             OpenOptions openOptions = new OpenOptions();
             Document illuDoc = illuApp.Open(filePath, AiDocumentColorSpace.aiDocumentCMYKColor, openOptions);
             illuDoc.Activate();
+            //Artboards artBoards = illuDoc.Artboards;
 
-            Artboards artBoards = illuDoc.Artboards;
-
-            int index = 0;
-
-            foreach (Layer layer in illuDoc.Layers)
+            var layers = illuDoc.Layers as List<Layer>;
+            Layer layer = layers.Find(l => l.Name == "producto");
+            if (layer != null)
             {
-                try
+                foreach (TextFrame placedItem in layer.TextFrames)
                 {
-                    if (layer.Name == "producto")
-                    {
-                        foreach (TextFrame placedItem in layer.TextFrames)
-                        {
-                            Console.WriteLine(placedItem.Name);
-                            Console.WriteLine(placedItem.Contents);
-                        }
-                    }
+                    Console.WriteLine(placedItem.Name);
+                    Console.WriteLine(placedItem.Contents);
                 }
-                catch (Exception)
-                {
-                }
-                index++;
-
             }
-
-            return true;
-
         }
 
 

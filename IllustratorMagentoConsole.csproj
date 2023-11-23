@@ -89,8 +89,10 @@
     <Compile Include="illustratorHelper.cs" />
     <Compile Include="localProduct.cs" />
     <Compile Include="Magento\Category.cs" />
+    <Compile Include="Magento\Client\GenericApiCall.cs" />
+    <Compile Include="Magento\getCategories.cs" />
     <Compile Include="Magento\getProducts.cs" />
-    <Compile Include="Magento\MagentoClient.cs" />
+    <Compile Include="Magento\Client\MagentoClient.cs" />
     <Compile Include="Magento\newCategory.cs" />
     <Compile Include="Magento\Option.cs" />
     <Compile Include="Magento\postProduct.cs" />

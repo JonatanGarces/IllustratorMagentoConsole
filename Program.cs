@@ -11,7 +11,7 @@ namespace IllustratorMagentoConsole
         static void Main(string[] args)
         {
             fileExplorer fe = new fileExplorer();
-            Folder folder = fe.setFolderHierarchy(Constants.diseñosManganimeshon);
+            Folder folder = fe.setFolderHierarchy(Constants.diseñosManganimeshon, 1);
 
             JsonSerializer serializer = new JsonSerializer();
             serializer.Converters.Add(new JavaScriptDateTimeConverter());
