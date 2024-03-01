@@ -130,7 +130,7 @@ namespace IllustratorMagentoConsole
                     mc.createProductLink(categoryLinks);
                 }
 
-                List<media_gallery_entry> mediaGalleryEntries = mc.getMediaGaleryEntry(productFolder.sku);
+                List<media_gallery_entry> mediaGalleryEntries = mc.getEntryMediaGalleries(productFolder.sku);
 
                 media_gallery_entry mediaGallery = (mediaGalleryEntries ?? new List<media_gallery_entry>() { }).Find(mediaGalleryEntry => mediaGalleryEntry.label == productFolder.productName);
                 if (mediaGallery == null)

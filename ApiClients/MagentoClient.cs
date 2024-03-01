@@ -23,11 +23,6 @@ namespace IllustratorMagentoConsole.Magento
             };
         }
 
-        public List<media_gallery_entry> getMediaGaleryEntry(string sku)
-        {
-            var response = CreateRequest("/rest/V1/products/" + sku + "/media", Method.Get);
-            return JsonConvert.DeserializeObject<List<media_gallery_entry>>(response) ?? null;
-        }
 
         public List<AttributeOption> getAttribute(string attribute_code)
         {
@@ -40,17 +35,20 @@ namespace IllustratorMagentoConsole.Magento
             return CreateRequest("/rest/V1/products/attributes/" + attribute_code + "/options", Method.Post, entry) ?? "";
         }
 
-        public Entry createEntryMediaGallery(string sku, Entry entry)
+
+        public String createEntryMediaGallery(string sku, Entry entry)
         {
+            Console.WriteLine("CHANGOS");
             var response = CreateRequest("/rest/V1/products/" + sku + "/media", Method.Post, entry);
-            return JsonConvert.DeserializeObject<Entry>(response) ?? null;
+            return response ?? null;
+
 
         }
 
-        public Entry updateEntryMediaGallery(string sku, int? entryId, Entry entry)
+        public String updateEntryMediaGallery(string sku, int? entryId, Entry entry)
         {
             var response = CreateRequest("/rest/V1/products/" + sku + "/media/" + entryId, Method.Put, entry);
-            return JsonConvert.DeserializeObject<Entry>(response) ?? null;
+            return response ?? null;
         }
         public List<ProductLinks.ProductLink> getProductLinks(int categoryId)
         {
@@ -70,6 +68,45 @@ namespace IllustratorMagentoConsole.Magento
             return JsonConvert.DeserializeObject<ProductLinks>(response) ?? null;
         }
 
+        public List<media_gallery_entry> getEntryMediaGalleries(string sku)
+        {
+            var response = CreateRequest("/rest/V1/products/" + sku + "/media", Method.Get);
+            var medias = (JsonConvert.DeserializeObject<List<media_gallery_entry>>(response) ?? null) as List<media_gallery_entry>;
+
+            return medias;
+        }
+        public media_gallery_entry getEntryMediaGallery(string sku, Entry entry)
+        {
+            var medias = getEntryMediaGalleries(sku);
+
+            if (medias != null && medias.Count > 0)
+            {
+                Console.WriteLine("chancho 2");
+                //entry.entry = medias[0];
+                //entry.entry.id = medias[0].id;
+                return medias[0];
+                //return updateEntryMediaGallery(sku, medias[0].id, entry);
+            }
+            else
+            {
+                Console.WriteLine("chancho 3");
+
+                createEntryMediaGallery(sku, entry);
+
+            }
+
+            medias = getEntryMediaGalleries(sku);
+
+            if (medias != null && medias.Count > 0)
+            {
+                Console.WriteLine("chancho 7");
+                //entry.entry = medias[0];
+                //entry.entry.id = medias[0].id;
+                return medias[0];
+                //return updateEntryMediaGallery(sku, medias[0].id, entry);
+            }
+            return null;
+        }
 
         public Product getProduct(Product fileProduct)
         {
@@ -78,15 +115,20 @@ namespace IllustratorMagentoConsole.Magento
             queryParameters.Add(new QueryParameter("searchCriteria[filterGroups][0][filters][0][value]", fileProduct.name));
             queryParameters.Add(new QueryParameter("searchCriteria[filterGroups][0][filters][0][conditionType]", "eq"));
             var response = CreateRequest("/rest/V1/products", Method.Get, null, queryParameters);
-            //Console.WriteLine(response);
-
             List<Product> products = ((JsonConvert.DeserializeObject<getProducts>(response).items) ?? null) as List<Product>;
             Product product = products.Find(p => p.name == fileProduct.name) ?? null;
 
-            return null;
+            //return null;
             if (product != null)
             {
-                return product;
+
+                var productUpdate = updateProduct(product);
+                if (null == productUpdate)
+                {
+                    return product;
+                }
+                return productUpdate;
+                // product;
             }
             return createProduct(fileProduct);
         }
@@ -111,7 +153,7 @@ namespace IllustratorMagentoConsole.Magento
         {
             postProduct postProduct = new postProduct();
             postProduct.product = product;
-            postProduct.saveOptions = true;
+            //postProduct.saveOptions = true;
             var response = CreateRequest("/rest/V1/products", Method.Post, postProduct);
             return JsonConvert.DeserializeObject<Product>(response) ?? null;
         }
@@ -121,6 +163,8 @@ namespace IllustratorMagentoConsole.Magento
             postProduct postProduct = new postProduct();
             postProduct.product = product;
             postProduct.saveOptions = true;
+            Console.WriteLine(product.name);
+
             var response = CreateRequest("/rest/V1/products/" + product.sku, Method.Put, postProduct);
             return JsonConvert.DeserializeObject<Product>(response) ?? null;
         }
@@ -138,16 +182,6 @@ namespace IllustratorMagentoConsole.Magento
         {
             var response = CreateRequest("/rest/V1/products/" + sku, Method.Delete);
             return Convert.ToBoolean(response);
-        }
-
-        public getCategories getCategories(string name)
-        {
-            List<QueryParameter> queryParameters = new List<QueryParameter>();
-            queryParameters.Add(new QueryParameter("searchCriteria[filterGroups][0][filters][0][field]", "name"));
-            queryParameters.Add(new QueryParameter("searchCriteria[filterGroups][0][filters][0][value]", name));
-            queryParameters.Add(new QueryParameter("searchCriteria[filterGroups][0][filters][0][conditionType]", "eq"));
-            var response = CreateRequest("/rest/V1/categories/list", Method.Get, null, queryParameters);
-            return JsonConvert.DeserializeObject<getCategories>(response);
         }
 
         public Category createCategory(Category category)
@@ -169,6 +203,7 @@ namespace IllustratorMagentoConsole.Magento
         public static string CreateRequest(string endpoint, Method method, object jsonObject = null, List<QueryParameter> queryParameters = null)
         {
             var request = new RestRequest(endpoint, method);
+            var jsonString = "";
             request.RequestFormat = DataFormat.Json;
             if (token != "" && token != null)
             {
@@ -176,12 +211,13 @@ namespace IllustratorMagentoConsole.Magento
             }
             if (jsonObject != null)
             {
-                var jsonString = JsonConvert.SerializeObject(jsonObject, Formatting.Indented, new JsonSerializerSettings
+                jsonString = JsonConvert.SerializeObject(jsonObject, Formatting.Indented, new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore,
                     DefaultValueHandling = DefaultValueHandling.Ignore,
                     Error = (sender, error) => error.ErrorContext.Handled = true
                 });
+
                 request.AddParameter("application/json", jsonString, ParameterType.RequestBody);
 
             }
@@ -195,7 +231,26 @@ namespace IllustratorMagentoConsole.Magento
                 var response = Client.Execute(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
+                    if (jsonObject != null)
+                    {
+                        Console.WriteLine(response.Content);
+                    }
+                    else
+                    {
+                        Console.WriteLine("jsonobject is null");
+                    }
+
                     return response.Content;
+                }
+                else
+                {
+
+                    Console.WriteLine("Error: " + response.ErrorMessage);
+                    Console.WriteLine(endpoint);
+                    Console.WriteLine(response.StatusCode);
+                    Console.WriteLine(method);
+                    Console.WriteLine(response.Content);
+                    Console.WriteLine(jsonString);
                 }
             }
             catch (Exception e)

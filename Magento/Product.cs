@@ -53,6 +53,7 @@ namespace IllustratorMagentoConsole.Magento
 
     internal class CustomAttribute
     {
+
         [JsonProperty("attribute_code")]
         public string attribute_code { get; set; }
 

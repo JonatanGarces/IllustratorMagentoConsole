@@ -1,8 +1,5 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using IllustratorMagentoConsole.FileExplorer;
 using System;
-using System.IO;
-using static IllustratorMagentoConsole.fileExplorer;
 
 namespace IllustratorMagentoConsole
 {
@@ -10,19 +7,33 @@ namespace IllustratorMagentoConsole
     {
         static void Main(string[] args)
         {
-            fileExplorer fe = new fileExplorer();
-            Folder folder = fe.setFolderHierarchy(Constants.diseñosManganimeshon, 1);
+            //folderHelper fe = new folderHelper();
+            //ShopifyClient sc = new ShopifyClient();
+            // List<ShopifySharp.Product> shopifyProducts = sc.getProductsAsync().Result;
+            CategoryFolder folder = new fileExplorer().setFolderHierarchy(Constants.diseñosManganimeshon, 1); // 1 root 3 3_Marcas 51
 
+            Console.ReadLine();
+
+
+
+
+            //foreach (var product in fe.products)
+            //{
+            //    Console.WriteLine(product.imagePath);
+            // }
+
+            /*
             JsonSerializer serializer = new JsonSerializer();
             serializer.Converters.Add(new JavaScriptDateTimeConverter());
             serializer.NullValueHandling = NullValueHandling.Ignore;
             using (StreamWriter sw = new StreamWriter(@"C:\Users\Jonatan\Documents\1_Public\1_Manganimeshon\1_DTF-UV\3_Marcas\json.txt"))
             using (JsonWriter writer = new JsonTextWriter(sw))
             {
-                serializer.Serialize(writer, folder);
-                // {"ExpiryDate":new Date(1230375600000),"Price":0}
+                serializer.Serialize(writer, fe.errorFiles);
             }
-            Console.ReadLine();
+            */
+
         }
     }
 }
+// {"ExpiryDate":new Date(1230375600000),"Price":0}
