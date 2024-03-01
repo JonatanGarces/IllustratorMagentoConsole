@@ -23,16 +23,16 @@ namespace IllustratorMagentoConsole
 
         public static class Magento
         {
-            public static string baseUrl { get; set; } = "https://vulture-outgoing-oddly.ngrok-free.app";//"https://curzar.com"; https://vulture-outgoing-oddly.ngrok-free.app http://localhost:8080
-            public static string username { get; set; } = "user"; //admin
-            public static string password { get; set; } = "bitnami1"; //o48098Eh
+            public static string baseUrl { get; set; } = "";
+            public static string username { get; set; } = "";
+            public static string password { get; set; } = "";
         }
 
         public static class Shopify
         {
-            public static string url { get; set; } = "curzar.myshopify.com";
+            public static string url { get; set; } = "";
 
-            public static string token { get; set; } = "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";
+            public static string token { get; set; } = "";
         }
 
 
