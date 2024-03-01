@@ -1,1 +1,1 @@
-# IllustratorMagentoConsole
+I have developed a console application in C# for document control, designed to streamline the export process of images, product information, and category structure from an Illustrator template file. The category structure closely aligns with the folders in the file explorer tree.
